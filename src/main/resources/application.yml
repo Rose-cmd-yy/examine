@@ -1,0 +1,28 @@
+spring:
+  # 数据源相关配置
+  datasource:
+    dynamic:
+      # 主数据源
+      primary: master
+      datasource:
+        #数据源1
+        master:
+          url: jdbc:mysql://175.6.129.5:3306/lx_petition?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+          username: root
+          password: Xuyue128@
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        # 数据源2
+        db2:
+          url: jdbc:oracle:thin:@175.6.36.9:21521:CT6602
+          type: com.alibaba.druid.pool.DruidDataSource
+          driver-class-name: oracle.jdbc.OracleDriver
+          username: hnpadisall
+          password: Hnwjw123
+mybatis:
+ mapper-locations: classpath*:mappers/*.xml
+ configuration:
+   map-underscore-to-camel-case: true
+
+
+
+

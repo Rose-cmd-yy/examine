@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.examine.dao.UserMapper">
+    <select id="find" resultType="com.example.examine.entity.UserRole">
+       select * from tb_user_role
+    </select>
+    <select id="findMenuByUserId" resultType="com.example.examine.entity.Menu">
+       SELECT tb_menu.* FROM tb_menu,tb_role_menu,tb_user_role
+       WHERE tb_user_role.role_id=tb_role_menu.role_id AND tb_role_menu.menu_id=tb_menu.id
+        AND user_id=#{id}
+    </select>
+    <select id="findPetitionByTime" resultType="com.example.examine.entity.vo">
+        SELECT petition_title,COUNT(*) as count FROM tb_petition_type,tb_petition
+         <where>
+             tb_petition_type.id=tb_petition.petition_type_id
+            <if test="startDate != null">
+                 <![CDATA[ and DATE_FORMAT(submit_time, '%Y-%m-%d') >= #{startDate} ]]>
+             </if>
+             <if test="endDate != null">
+                 <![CDATA[ and DATE_FORMAT(submit_time, '%Y-%m-%d') <= #{endDate} ]]>
+             </if>
+         </where>
+        GROUP BY petition_title
+    </select>
+    <insert id="insert" parameterType="com.example.examine.entity.Vehicle">
+      INSERT INTO YH_VEHICLE(EXIT_ID,LICENSE_NUMBER)
+      VALUES(#{exitId},#{licenseNumber})
+    </insert>
+    <select id="findByState" parameterType="com.example.examine.entity.Vehicle" resultType="com.example.examine.entity.Vehicle">
+       SELECT * FROM YH_VEHICLE
+       where
+           <if test="vehicle.state!=null">
+                STATE = 0
+           </if>
+           <if test="vehicle.licenseNumber != '' and vehicle.licenseNumber != null">
+               and LICENSE_NUMBER = #{vehicle.licenseNumber,jdbcType=VARCHAR}
+           </if>
+       ORDER BY EXIT_TIME DESC
+    </select>
+    <select id="findBylicenseNumber" resultType="com.example.examine.entity.LicenseNumber">
+      SELECT YH_LICENSE_NUMBER.PROVINCE,YH_LICENSE_NUMBER.CODE,YH_LICENSE_NUMBER.PLATE,COUNT(*) as NUM FROM YH_LICENSE_NUMBER,YH_VEHICLE WHERE YH_VEHICLE.CODE_ID=YH_LICENSE_NUMBER.CODE
+		GROUP BY YH_LICENSE_NUMBER.PROVINCE,YH_LICENSE_NUMBER.CODE,YH_LICENSE_NUMBER.PLATE
+		ORDER BY COUNT(*) DESC
+    </select>
+</mapper>
